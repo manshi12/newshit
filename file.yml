@@ -1,0 +1,26 @@
+swagger:
+  enabled: true
+  title: Risk-Web services
+  description: >
+    Various web services were created to eliminate the manual
+    and repetitive tasks for Risk-Web operations.
+  version: 1.0.0
+  termOfServiceUrl: API terms of services URL
+  contactName: Mallika Reddy
+  contactUrl: https://sbc.safe.socgen/people/mallika.reddy
+  contactEmail: GSC-ITEC-FRM-CCR-RISKWEB@socgen.com
+  license: (c) SGCIB. All Rights Reserved
+  licenseUrl: http://sgithub.fr.world.socgen/DTL/apibank-java-showcase
+
+security:
+  enabled: true
+  implicit-flow:
+    authorizeEndpointUrl: https://sgconnect-hom.fr.world.socgen/openam/
+    # These values will come dynamically from Vault via AppStarter
+    clientId: ${client.id}
+    clientSecret: ${client.secret}
+  globalScopes:
+    - name: openid
+      description: Default OpenID scope
+    - name: api.upload-iflow-attachment.v1
+      description: Scope for Analyst API
