@@ -29,11 +29,13 @@ public class RiskwebMaestroStartup {
 
         // 2️⃣ Prepare dynamic properties
         Map<String, Object> props = new HashMap<>();
+       // Database credentials
         props.put("jdbc.username", secrets.getString("username"));
         props.put("jdbc.password", secrets.getString("password"));
-        props.put("jdbc.clientId", secrets.getString("clientId"));
-        props.put("jdbc.secretId", secrets.getString("secretId"));
-
+        
+        // Maestro credentials
+        props.put("maestro.client.id", secrets.getString("clientId"));
+        props.put("maestro.secret.id", secrets.getString("secretId"));
         // 3️⃣ Create Spring Environment with these dynamic properties
         StandardEnvironment env = new StandardEnvironment();
         MutablePropertySources propertySources = env.getPropertySources();
