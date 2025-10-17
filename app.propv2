@@ -1,0 +1,13 @@
+server.port=8447
+
+spring.datasource.driverClassName=oracle.jdbc.driver.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@osfreyprci001.ocp.cloud.socgen:1522
+spring.datasource.username=${spring.datasource.username}
+spring.datasource.password=${spring.datasource.password}
+
+logging.config=classpath:logback.xml
+
+spring.mail.host=localhost
+spring.mail.port=25
+spring.mail.from=iflow@socgen.com
+spring.mail.properties.mail.smtp.auth=false
