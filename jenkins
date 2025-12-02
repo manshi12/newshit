@@ -2,27 +2,37 @@
 @Library(['global-vars@CCRRAID-111_Git_tagIssue', 'pipeline-toolbox@MAVEN-SONAR-DSP','common-vars'])
 
 node('JFROG') {
-    // Checkout code first
-    checkout scm
+    stage('Checkout') {
+        checkout scm
+    }
     
-    // Run Maven build explicitly
-    sh 'mvn clean package -DskipTests'
+    stage('Build') {
+        withMaven(maven: 'Maven-3.6.3', mavenSettingsConfig: 'MAVEN_SETTINGS_XML_JFROG_RIS') {
+            sh 'mvn clean package -DskipTests'
+        }
+    }
     
-    // Verify JAR creation
-    sh '''
-        echo "Checking target directory:"
-        ls -la target/
-        echo "Looking for JAR files:"
-        find target/ -name "*.jar"
-    '''
+    stage('Verify Build') {
+        sh '''
+            echo "Checking target directory:"
+            ls -la target/
+            echo "JAR files created:"
+            find target/ -name "*.jar" -ls
+        '''
+    }
     
-    // Then run your integration
-    cintegrateCommonOnPrem ([
-        trigram: 'RIS',
-        iappli:'3609',
-        mavenSettingsId: 'MAVEN_SETTINGS_XML_JFROG_RIS',
-        credentialSonar: 'SONARQUBE_TOKEN_RIS',
-        sonarJavaTool: 'openjdk-11',
-        sonarMinimumCoverage: 0
-    ])
+    stage('Integration') {
+        cintegrateCommonOnPrem ([
+            trigram: 'RIS',
+            iappli:'3609',
+            mavenSettingsId: 'MAVEN_SETTINGS_XML_JFROG_RIS',
+            credentialSonar: 'SONARQUBE_TOKEN_RIS',
+            sonarJavaTool: 'openjdk-11',
+            sonarMinimumCoverage: 0
+        ])
+    }
+    
+    stage('Archive') {
+        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+    }
 }
