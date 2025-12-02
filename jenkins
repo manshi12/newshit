@@ -1,0 +1,19 @@
+#!/usr/bin/env groovy
+node('JFROG') {
+    cintegrateCommonOnPrem ([
+        trigram: 'RIS',
+        iappli:'3609',
+        mavenSettingsId: 'MAVEN_SETTINGS_XML_JFROG_RIS',
+        credentialSonar: 'SONARQUBE_TOKEN_RIS',
+        sonarJavaTool: 'openjdk-11',
+        sonarMinimumCoverage: 0
+    ])
+    
+    // Add this to verify JAR creation
+    sh '''
+        echo "Checking target directory:"
+        ls -la target/
+        echo "Looking for JAR files:"
+        find target/ -name "*.jar"
+    '''
+}
