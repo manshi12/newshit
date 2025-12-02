@@ -1,5 +1,22 @@
 #!/usr/bin/env groovy
+@Library(['global-vars@CCRRAID-111_Git_tagIssue', 'pipeline-toolbox@MAVEN-SONAR-DSP','common-vars'])
+
 node('JFROG') {
+    // Checkout code first
+    checkout scm
+    
+    // Run Maven build explicitly
+    sh 'mvn clean package -DskipTests'
+    
+    // Verify JAR creation
+    sh '''
+        echo "Checking target directory:"
+        ls -la target/
+        echo "Looking for JAR files:"
+        find target/ -name "*.jar"
+    '''
+    
+    // Then run your integration
     cintegrateCommonOnPrem ([
         trigram: 'RIS',
         iappli:'3609',
@@ -8,12 +25,4 @@ node('JFROG') {
         sonarJavaTool: 'openjdk-11',
         sonarMinimumCoverage: 0
     ])
-    
-    // Add this to verify JAR creation
-    sh '''
-        echo "Checking target directory:"
-        ls -la target/
-        echo "Looking for JAR files:"
-        find target/ -name "*.jar"
-    '''
 }
